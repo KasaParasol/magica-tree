@@ -57,7 +57,7 @@
             data
         );
 
-        tree.addEventListener('drop', (evt) => {
+        tree.addEventListener('holddrop', (evt) => {
             evt.detail.item.parent.data.children = evt.detail.item.parent.data.children.filter(e => e !== evt.detail.item.data);
             evt.detail.for.data.children.push(evt.detail.item.data);
             leave();
@@ -74,7 +74,7 @@
             document.querySelectorAll('.hold').forEach(e => e.classList.remove('hold'));
         };
 
-        tree.addEventListener('over', (evt) => {
+        tree.addEventListener('holdover', (evt) => {
             document.querySelectorAll('li.over').forEach(e => e.classList.remove('over'));
             evt.detail.for.element.classList.add('over');
         });

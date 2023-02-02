@@ -36,7 +36,7 @@ export class MagicaTree extends EventTarget
             for (const child of i.children) {
                 f(child);
             }
-            for (const iterator of ['drop', 'over', 'hold', 'holdleave', 'holdmove', 'click', 'contextmenu']) {
+            for (const iterator of ['holddrop', 'holdover', 'hold', 'holdleave', 'holdmove', 'flick', 'click', 'contextmenu']) {
                 i.addEventListener(iterator, evt => {
                     this.dispatchEvent(new MagicaTree.CustomEvent(evt.type, {detail: evt.detail}));
                 });
@@ -72,14 +72,14 @@ export class TreeItem extends EventTarget
             evt.stopPropagation();
             const item = genTreeItems.find(e => e.element === evt.detail.item);
             if (item.contains(this)) return;
-            this.dispatchEvent(new MagicaTree.CustomEvent('drop', {detail: {item, for: this}}));
+            this.dispatchEvent(new MagicaTree.CustomEvent('holddrop', {detail: {...evt.detail, item, for: this}}));
         });
 
         this.element.addEventListener('holdover', evt => {
             if (evt.target === evt.currentTarget) {
                 const item = genTreeItems.find(e => e.element === evt.detail.item);
                 if (item.contains(this)) return;
-                this.dispatchEvent(new MagicaTree.CustomEvent('over', {detail: {item, for: this}}));
+                this.dispatchEvent(new MagicaTree.CustomEvent('holdover', {detail: {...evt.detail, item, for: this}}));
             }
         });
 
@@ -97,7 +97,12 @@ export class TreeItem extends EventTarget
 
         this.element.addEventListener('holdleave', evt => {
             evt.stopPropagation();
-            this.dispatchEvent(new MagicaTree.CustomEvent('holdleave', {detail: {item: this}}));
+            this.dispatchEvent(new MagicaTree.CustomEvent('holdleave', {detail: {item: this, ...evt.detail}}));
+        });
+
+        this.element.addEventListener('flick', evt => {
+            evt.stopPropagation();
+            this.dispatchEvent(new MagicaTree.CustomEvent('flick', {detail: {item: this, ...evt.detail}}));
         });
 
         this.element.addEventListener('contextmenu', evt => {
@@ -172,14 +177,12 @@ try {
     MagicaTree.document = document;
     MagicaTree.CustomEvent = CustomEvent;
     MagicaTree.HTMLElement = HTMLElement;
-    MagicaTree.Image = Image;
 }
 catch {
     MagicaTree.window = undefined;
     MagicaTree.document = undefined;
     MagicaTree.CustomEvent = undefined;
     MagicaTree.HTMLElement = undefined;
-    MagicaTree.Image = undefined;
 }
 
 export default {MagicaTree, TreeItem};
