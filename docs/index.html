@@ -33,6 +33,7 @@
 </head>
 <body>
     <div id="main"></div>
+    <textarea id="show" rows="30" style="width: 100%;" readonly></textarea>
     <script src="main.js"></script>
     <script>
         const data = {
@@ -45,6 +46,8 @@
                 {value: 'eee', children: []}
             ]
         };
+        show.value = JSON.stringify(data, null, '    ');
+
         window.__data = data;
         const tree = new MagicaTree.MagicaTree(
             document.getElementById('main'),
@@ -62,6 +65,7 @@
             evt.detail.for.data.children.push(evt.detail.item.data);
             leave();
             tree.buildTree(data);
+            show.value = JSON.stringify(data, null, '    ');
         });
 
         tree.addEventListener('holdleave', (evt) => {
