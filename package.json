@@ -7,7 +7,11 @@
     "repository": "KasaParasol/magica-tree",
     "license": "MIT",
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "build:js-dev": "webpack --mode development",
+        "build:js-demo": "webpack --env mode=demo",
+        "lint": "xo",
+        "test": "c8 -r html ava --verbose",
+        "test:cui": "c8 ava --verbose"
     },
     "keywords": [
         "tree",
@@ -68,5 +72,8 @@
         "ignores": [
             "/docs"
         ]
+    },
+    "dependencies": {
+        "magic-touch": "^0.0.4"
     }
 }

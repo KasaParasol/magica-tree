@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        ul {
+            list-style-type: none;
+            padding-left: 0;
+            user-select: none;
+        }
+        li > ul {
+            padding-left: 1.5rem;
+        }
+        li.over {
+            background-color: cornflowerblue;
+        }
+        .hold {
+            opacity: .5;
+        }
+        .flow {
+            pointer-events: none;
+            position: absolute;
+            padding: 2px;
+            border: 1px solid cornflowerblue;
+            background-color: darkblue;
+            opacity: .5;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div id="main"></div>
+    <script src="main.js"></script>
+    <script>
+        const data = {
+            value: 'root',
+            children: [
+                {value: 'aaa', children: [
+                    {value: 'bbb', children: []},
+                    {value: 'ccc', children: []},
+                ]}, {value: 'ddd', children: []},
+                {value: 'eee', children: []}
+            ]
+        };
+        window.__data = data;
+        const tree = new MagicaTree.MagicaTree(
+            document.getElementById('main'),
+            function cnv (e, p) {
+                const ti = new MagicaTree.TreeItem(e.value, undefined, p, e);
+                for (const child of e.children) {
+                    cnv(child, ti);
+                }
+            },
+            data
+        );
+
+        tree.addEventListener('drop', (evt) => {
+            evt.detail.item.parent.data.children = evt.detail.item.parent.data.children.filter(e => e !== evt.detail.item.data);
+            evt.detail.for.data.children.push(evt.detail.item.data);
+            leave();
+            tree.buildTree(data);
+        });
+
+        tree.addEventListener('leave', (evt) => {
+            leave();
+            tree.buildTree(data);
+        });
+
+        const leave = () => {
+            document.querySelector('.flow').remove();
+        };
+
+        tree.addEventListener('over', (evt) => {
+            document.querySelectorAll('li.over').forEach(e => e.classList.remove('over'));
+            evt.detail.for.element.classList.add('over');
+        });
+
+        tree.addEventListener('hold', (evt) => {
+            document.querySelectorAll('li.hold').forEach(e => e.classList.remove('hold'));
+            evt.detail.target.classList.add('hold');
+            const elem = document.createElement('div');
+            elem.innerHTML = evt.detail.target.innerHTML;
+            Array.from(elem.children).forEach(e => e.remove());
+            elem.classList.add('flow');
+            document.body.append(elem);
+            elem.style.top = `${evt.detail.point.y - 8}px`;
+            elem.style.left = `${evt.detail.point.x - 4}px`;
+        });
+        window.addEventListener('mousemove', (evt) => {
+            const flow = document.querySelector('.flow');
+            if (flow) {
+                flow.style.top = `${evt.pageY - 8}px`;
+                flow.style.left = `${evt.pageX - 4}px`;
+            }
+        })
+    </script>
+</body>
+</html>
