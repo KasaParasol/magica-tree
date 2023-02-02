@@ -64,13 +64,14 @@
             tree.buildTree(data);
         });
 
-        tree.addEventListener('leave', (evt) => {
+        tree.addEventListener('holdleave', (evt) => {
             leave();
-            tree.buildTree(data);
         });
 
         const leave = () => {
-            document.querySelector('.flow').remove();
+            document.querySelector('.flow')?.remove();
+            document.querySelectorAll('.over').forEach(e => e.classList.remove('over'));
+            document.querySelectorAll('.hold').forEach(e => e.classList.remove('hold'));
         };
 
         tree.addEventListener('over', (evt) => {

@@ -74,6 +74,6 @@
         ]
     },
     "dependencies": {
-        "magic-touch": "^0.0.4"
+        "magic-touch": "^0.0.5"
     }
 }

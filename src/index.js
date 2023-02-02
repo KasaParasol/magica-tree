@@ -36,15 +36,11 @@ export class MagicaTree extends EventTarget
             for (const child of i.children) {
                 f(child);
             }
-            i.addEventListener('drop', evt => {
-                this.dispatchEvent(new MagicaTree.CustomEvent('drop', {detail: evt.detail}));
-            });
-            i.addEventListener('over', evt => {
-                this.dispatchEvent(new MagicaTree.CustomEvent('over', {detail: evt.detail}));
-            });
-            i.addEventListener('hold', evt => {
-                this.dispatchEvent(new MagicaTree.CustomEvent('hold', {detail: evt.detail}));
-            });
+            for (const iterator of ['drop', 'over', 'hold', 'holdleave', 'holdmove', 'click', 'contextmenu']) {
+                i.addEventListener(iterator, evt => {
+                    this.dispatchEvent(new MagicaTree.CustomEvent(evt.type, {detail: evt.detail}));
+                });
+            }
         };
         for (const child of this.children) {
             f(child);
@@ -89,12 +85,29 @@ export class TreeItem extends EventTarget
 
         this.element.addEventListener('hold', evt => {
             evt.stopPropagation();
-            this.dispatchEvent(new MagicaTree.CustomEvent('hold', {detail: {...evt.detail, target: evt.target}}));
+            const item = genTreeItems.find(e => e.element === evt.detail.item);
+            this.dispatchEvent(new MagicaTree.CustomEvent('hold', {detail: {...evt.detail, item, target: evt.target}}));
+        });
+
+        this.element.addEventListener('holdmove', evt => {
+            evt.stopPropagation();
+            const item = genTreeItems.find(e => e.element === evt.detail.item);
+            this.dispatchEvent(new MagicaTree.CustomEvent('holdmove', {detail: {...evt.detail, item, target: evt.target}}));
         });
 
         this.element.addEventListener('holdleave', evt => {
             evt.stopPropagation();
-            this.dispatchEvent(new MagicaTree.CustomEvent('leave', {detail: {item: this}}));
+            this.dispatchEvent(new MagicaTree.CustomEvent('holdleave', {detail: {item: this}}));
+        });
+
+        this.element.addEventListener('contextmenu', evt => {
+            evt.stopPropagation();
+            this.dispatchEvent(new Event('contextmenu'));
+        });
+
+        this.element.addEventListener('click', evt => {
+            evt.stopPropagation();
+            this.dispatchEvent(new Event('click'));
         });
 
         this.inner = typeof inner === 'object' && inner instanceof HTMLElement? inner: MagicaTree.document.createTextNode(inner);
