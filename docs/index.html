@@ -95,11 +95,11 @@
             elem.style.left = `${evt.detail.point.x - 4}px`;
         });
 
-        window.addEventListener('mousemove', (evt) => {
+        tree.addEventListener('holdmove', (evt) => {
             const flow = document.querySelector('.flow');
             if (flow) {
-                flow.style.top = `${evt.pageY - 8}px`;
-                flow.style.left = `${evt.pageX - 4}px`;
+                flow.style.top = `${evt.detail.point.y - 8}px`;
+                flow.style.left = `${evt.detail.point.x - 4}px`;
             }
         });
     </script>
