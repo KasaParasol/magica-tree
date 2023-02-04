@@ -1,7 +1,6 @@
 import { enchantment } from "magic-touch";
 
 const genTreeItems = [];
-let droptargets = [];
 
 export class MagicaTree extends EventTarget
 {
