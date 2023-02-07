@@ -106,12 +106,17 @@ export class TreeItem extends EventTarget
 
         this.element.addEventListener('contextmenu', evt => {
             evt.stopPropagation();
-            this.dispatchEvent(new Event('contextmenu'));
+            this.dispatchEvent(new MagicaTree.CustomEvent('contextmenu', {detail: {...evt.detail, item: this, target: evt.target}}));
         });
 
         this.element.addEventListener('click', evt => {
             evt.stopPropagation();
-            this.dispatchEvent(new Event('click'));
+            this.dispatchEvent(new MagicaTree.CustomEvent('click', {detail: {...evt.detail, item: this, target: evt.target}}));
+        });
+
+        this.element.addEventListener('dblclick', evt => {
+            evt.stopPropagation();
+            this.dispatchEvent(new MagicaTree.CustomEvent('dblclick', {detail: {...evt.detail, item: this, target: evt.target}}));
         });
 
         this.inner = typeof inner === 'object' && inner instanceof HTMLElement? inner: MagicaTree.document.createTextNode(inner);
