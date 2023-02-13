@@ -46,6 +46,12 @@ export class MagicaTree extends EventTarget
         }
     }
 
+    addEventListener(type, listener, opts) {
+        super.addEventListener(type, listener, opts);
+
+        if (type === 'contextmenu') this.disableContextmenu = true;
+    }
+
     append (item) {
         this.children.push(item);
         this.inner.append(item.element);
@@ -106,6 +112,7 @@ export class TreeItem extends EventTarget
 
         this.element.addEventListener('contextmenu', evt => {
             evt.stopPropagation();
+            if (this.root.disableContextmenu) evt.preventDefault();
             this.dispatchEvent(new MagicaTree.CustomEvent('contextmenu', {detail: {item: this, target: evt.target, position: {x: evt.pageX, y: evt.pageY}}}));
         });
 
