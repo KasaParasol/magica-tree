@@ -27,10 +27,10 @@ export class MagicaTree extends EventTarget
         this.data = data;
     }
 
-    buildTree (data) {
+    async buildTree (data) {
         this.inner.innerHTML = '';
         this.children = [];
-        this.converter(data, this);
+        await this.converter(data, this);
         const f = (i) => {
             for (const child of i.children) {
                 f(child);
